@@ -1,0 +1,5 @@
+Q1:  1 x 1 = 1 - Correct
+Q2.  2 x 1 = 1 - Incorrect: Answer = 2
+Q3:  1 x 1 = 1 - Correct
+Q4:  2 x 1 = 2 - Correct
+Q5:  2 x 2 = 4 - Correct
