@@ -17,15 +17,16 @@ if __name__ == '__main__':
             self.mystery_box_label = Label(self.start_frame, text="Math Game Quiz", font="Arial 20 bold")
             self.mystery_box_label.grid(row=1)
 
-            # Entry box, Button & Error Label (row 2)
+            # Number Frame for lowest and highest number
             self.number_frame = Frame(self.start_frame, width=200)
             self.number_frame.grid(row=2)
 
+            # Lowest Number Entry Box, Label and Error Label
             self.lowest_number = Label(self.number_frame, text="Lowest Number", font="Arial 14")
             self.lowest_number.grid(row=0, column=0, padx=15, pady=5)
 
-            self.lowest_number = Label(self.number_frame, text="Highest Number", font="Arial 14")
-            self.lowest_number.grid(row=0, column=1, padx=15, pady=5)
+            self.highest_number = Label(self.number_frame, text="Highest Number", font="Arial 14")
+            self.highest_number.grid(row=0, column=1, padx=15, pady=5)
 
             self.number_low = Entry(self.number_frame, font="Arial 19 bold",
                                     width=5)

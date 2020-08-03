@@ -81,7 +81,7 @@ if __name__ == '__main__':
             # stats button (row 1)
             self.continue_button = Button(self.stats_frame, text="Continue",
                                        font=("Arial", "14"),
-                                       padx=10, pady=-10, width=10, command=self.first_question)
+                                       padx=10, pady=-10, width=10, command=self.check_input)
             self.continue_button.grid(row=0, column=2)
 
             # Quit Button
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         def help(self):
             get_help = Help(self)
 
-        def first_question(self):
+        def check_input(self):
             low_number = self.number_low.get()
             high_number = self.number_high.get()
             has_errors = "no"
@@ -122,17 +122,17 @@ if __name__ == '__main__':
                     try:
                         high_number = int(high_number)
 
-                        if high_number < -1000:
+                        if high_number < -100000000:
                             self.number_high_error.config(text="Can not be less"
                                                                "\n"
-                                                               "than -1000")
+                                                               "than -10000000")
                             self.number_high.config(bg="#ffafaf")
                             has_errors = "yes"
 
-                        elif high_number > 1000:
+                        elif high_number > 100000000:
                             self.number_high_error.config(text="Can not be more"
                                                                "\n"
-                                                               "than 1000")
+                                                               "than 10000000")
                             self.number_high.config(bg="#ffafaf")
                             has_errors = "yes"
 
@@ -216,15 +216,15 @@ class Help:
         self.how_heading.grid(row=0)
 
         help_text="In the first box enter the lowest number you wish " \
-                  "to be used in the quiz. The lowest you can go is -1000." \
+                  "to be used in the quiz. The lowest you can go is -10000000." \
                   "\n\n" \
                   "In the second box enter the highest number you wish " \
-                  "to be used in the quiz. The highest you can go is 1000." \
+                  "to be used in the quiz. The highest you can go is 10000000." \
                   "\n\n" \
                   "Once you have chosen your numbers, select addition, " \
                   "subtraction, multiplication or division." \
                   "\n\n" \
-                  "Then press Continue or the Enter Key to move on to the next part."
+                  "Then press Continue to move on to the next part."
 
         # help text (label, row 1)
         self.help_text = Label(self.help_frame, text=help_text,
