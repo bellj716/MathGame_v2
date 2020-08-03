@@ -1,0 +1,6 @@
+Q1:  22 + 22 = 44 - Correct
+Q2:  16 + 15 = 31 - Correct
+Q3.  17 + 20 = 3 - Incorrect: Answer = 37
+
+
+You Answered 2 Correctly out of 3 - You got 66.67% of the questions correct, Not Bad.
