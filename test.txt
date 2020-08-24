@@ -1,5 +1,4 @@
-Q1:  1 x 1 = 1 - Correct
-Q2.  2 x 1 = 1 - Incorrect: Answer = 2
-Q3:  1 x 1 = 1 - Correct
-Q4:  2 x 1 = 2 - Correct
-Q5:  2 x 2 = 4 - Correct
+Q1.  1 + 2 = 1 - Incorrect: Answer = 3
+
+
+You Answered 0 Correctly out of 1 - You got 0.0% of the questions correct, Ouch.

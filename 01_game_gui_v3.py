@@ -39,21 +39,6 @@ class Game:
         #if user press cross instead of dismiss, close help and release help button
         self.help_box.protocol('WM_DELETE_WINDOW', partial(self.close_help, partner))
 
-        # set up gui frame
-        self.help_frame = Frame(self.help_box, width=300)
-        self.help_frame.grid()
-
-        self.score_frame = Frame(self.help_frame, width=300)
-        self.score_frame.grid(row=0)
-
-        # set up help heading (row 0)
-        self.how_heading = Label(self.score_frame, text="Question: {}".format(self.question_number.get()),
-                                 font="Arial 10", anchor=E, width=50)
-        self.how_heading.grid(row=0)
-
-        self.number_frame = Frame(self.help_frame,width=300)
-        self.number_frame.grid(row=1)
-
         thingy = random.randint(1, 4)
 
         num1 = random.randint(1, 12)
@@ -79,41 +64,62 @@ class Game:
 
         self.true_answer.set(answer)
 
-        self.first_number = Label(self.number_frame, text="{}".format(num1), font="Arial 15")
-        self.first_number.grid(row=1, column=0)
+        # set up gui frame
+        self.help_frame = Frame(self.help_box, width=300)
+        self.help_frame.grid()
 
-        self.symbol = Label(self.number_frame, text="{}".format(op_text), font="Arial 15")
+        self.number_frame = Frame(self.help_frame, width=300)
+        self.number_frame.grid(row=0)
+
+        # set question number
+        self.how_heading = Label(self.number_frame, text="Question {}:".format(self.question_number.get()),
+                                 font="Arial 15", width=10, anchor=W)
+        self.how_heading.grid(row=1, column=0, padx=5)
+
+        # show the question
+        self.first_number = Label(self.number_frame, text="{}".format(num1), font="Arial 15", anchor=W)
+        self.first_number.grid(row=1, column=1)
+
+        self.symbol = Label(self.number_frame, text="{}".format(op_text), font="Arial 15", anchor=W)
         self.symbol.grid(row=1, column=2)
 
-        self.second_number = Label(self.number_frame, text="{}".format(num2), font="Arial 15")
+        self.second_number = Label(self.number_frame, text="{}".format(num2), font="Arial 15", anchor=W, width=12)
         self.second_number.grid(row=1, column=3)
 
-        self.answer_entry = Entry(self.help_frame, font="Arial 15", width=10)
-        self.answer_entry.grid(row=2, pady=5)
+        # frame for answering question
+        self.entry_box_frame = Frame(self.help_frame, width=300)
+        self.entry_box_frame.grid(row=1)
 
-        self.entry_error_label = Label(self.help_frame, text="", font="Arial 15")
-        self.entry_error_label.grid(row=3, pady=5)
+        # Space for answering the question and error when answering
+        self.answer_entry = Entry(self.entry_box_frame, font="Arial 15", width=10)
+        self.answer_entry.grid(row=1, column=0, pady=5, padx=15)
 
-        self.answer_question = Button(self.help_frame, font="Arial 15", text="Submit", width=10,
-                                      command=partial(self.check_answer))
-        self.answer_question.grid(row=4, pady=10)
+        self.entry_error_label = Label(self.entry_box_frame, text="", font="Arial 15")
+        self.entry_error_label.grid(row=2, column=0, pady=5)
 
+        # Frame for buttons
         self.lower_frame = Frame(self.help_frame, width=10)
         self.lower_frame.grid(row=5)
 
+        # Submit button
+        self.answer_question = Button(self.lower_frame, font="Arial 15", text="Submit", width=10,
+                                      command=partial(self.check_answer))
+        self.answer_question.grid(row=0, column=0, pady=15)
+
         # help button (row 2)
         self.help_button = Button(self.lower_frame, text="Help", font="Arial 14", command=self.help2, width=10)
-        self.help_button.grid(row=0, column=0, padx=10, pady=15)
+        self.help_button.grid(row=1, column=0, pady=15)
 
-        self.continue_button = Button(self.lower_frame, text="Continue", font="Arial 14", width=10, command=partial(self.next_question))
-        self.continue_button.grid(row=0, column=1, padx=10, pady=15)
+        # continue button
+        self.continue_button = Button(self.lower_frame, text="Continue", font="Arial 14", width=10,
+                                      command=partial(self.next_question))
+        self.continue_button.grid(row=0, column=1, pady=15, padx=2)
         self.continue_button.config(state=DISABLED)
 
-        #dismiss button (row 2)
-        self.dismiss_btn = Button(self.help_frame, text="Finish", width=10,
-                                  bg="#660000", font="Arial 14 bold", fg="white",
-                                  command=partial(self.close_help, partner))
-        self.dismiss_btn.grid(row=6, pady=10)
+        # dismiss button (row 2)
+        self.dismiss_btn = Button(self.lower_frame, text="Stats", width=10,
+                                  bg="#660000", font="Arial 14 bold", fg="white")
+        self.dismiss_btn.grid(row=1, column=1, pady=15, padx=2)
 
         print(answer)
 

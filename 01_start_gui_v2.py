@@ -98,6 +98,9 @@ if __name__ == '__main__':
             high_number = self.number_high.get()
             has_errors = "no"
             var = self.var.get()
+            print(low_number)
+            print(high_number)
+            print(var)
 
             try:
                 low_number = int(low_number)
@@ -122,17 +125,17 @@ if __name__ == '__main__':
                     try:
                         high_number = int(high_number)
 
-                        if high_number < -100000000:
+                        if high_number < -1000:
                             self.number_high_error.config(text="Can not be less"
                                                                "\n"
-                                                               "than -100000000")
+                                                               "than -1000")
                             self.number_high.config(bg="#ffafaf")
                             has_errors = "yes"
 
-                        elif high_number > 100000000:
+                        elif high_number > 1000:
                             self.number_high_error.config(text="Can not be more"
                                                                "\n"
-                                                               "than 100000000")
+                                                               "than 1000")
                             self.number_high.config(bg="#ffafaf")
                             has_errors = "yes"
 
@@ -209,10 +212,10 @@ class Help:
         self.how_heading.grid(row=0)
 
         help_text="In the first box enter the lowest number you wish " \
-                  "to be used in the quiz. The lowest you can go is -100000000." \
+                  "to be used in the quiz. The lowest you can go is -1000." \
                   "\n\n" \
                   "In the second box enter the highest number you wish " \
-                  "to be used in the quiz. The highest you can go is 100000000." \
+                  "to be used in the quiz. The highest you can go is 1000." \
                   "\n\n" \
                   "Once you have chosen your numbers"
 
