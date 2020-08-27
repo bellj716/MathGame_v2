@@ -11,14 +11,16 @@ if __name__ == '__main__':
             self.start_frame = Frame(padx=10,  pady=10)
             self.start_frame.grid()
 
+            # Set up number to decide what radio button is selected
             self.var = IntVar()
             self.var.set(0)
+
             self.low_number = IntVar()
             self.high_number = IntVar()
 
             # Math Heading heading row 1
-            self.mystery_box_label = Label(self.start_frame, text="Math Game Quiz", font="Arial 20 bold")
-            self.mystery_box_label.grid(row=1)
+            self.math_quiz_label = Label(self.start_frame, text="Math Game Quiz", font="Arial 20 bold")
+            self.math_quiz_label.grid(row=1)
 
             # Entry box, Button & Error Label (row 2)
             self.number_frame = Frame(self.start_frame, width=200)
@@ -27,8 +29,6 @@ if __name__ == '__main__':
             # Lowest number Label, Entry box, and error label
             self.lowest_number = Label(self.number_frame, text="Lowest Number", font="Arial 14")
             self.lowest_number.grid(row=0, column=0, padx=15, pady=5)
-
-
 
             self.number_low = Entry(self.number_frame, font="Arial 19 bold",
                                     width=5)
@@ -71,6 +71,7 @@ if __name__ == '__main__':
                                         variable=self.var, value=4, anchor=W, width=10)
             self.division.grid(row=4, padx=15, pady=3)
 
+            # Radio button error label
             self.var_error_label = Label(self.radio_frame)
             self.var_error_label.grid(row=5, padx=15, pady=5)
 
@@ -127,6 +128,7 @@ if __name__ == '__main__':
                     has_errors = "yes"
 
                 else:
+                    # set error message below low number to blank, and set the colour of the entry box to normal
                     self.number_low_error.config(text="")
                     self.number_low.config(bg="SystemButtonFace")
                     try:
@@ -263,29 +265,31 @@ class Help:
 class Game:
     def __init__(self, partner):
 
-        # set variables used to develop questions
-        thingy = partner.var.get()
-        low_number = partner.low_number.get()
-        high_number = partner.high_number.get()
-
         # Record actual answer, question number, questions answered and correctly answered
+        # Set the correct answer up to be an intiger
         self.true_answer = IntVar()
         self.true_answer.set(0)
+        # Set the question number up to be an intiger, and set it to 0, as it will be updated on
+        # question generation
         self.question_number = IntVar()
-        self.question_number.set(1)
+        self.question_number.set(o)
+        # Set the questions answered up to be an intiger, and set to 0, as none have been answered yet
         self.questions_answered = IntVar()
         self.questions_answered.set(0)
+        # Set the questions answered correctly up to be an intiger, and set to 0, as none have been answered correctly yet
         self.correctly_answered = IntVar()
         self.correctly_answered.set(0)
+        # used to remember the buttons enabled and disabled before stats is opened
+        self.bach = IntVar()
 
-        # Create a blank List
+        # Create a blank List to store all questions and answers
         self.all_calculations = []
 
         # sets up child window (ie: help box)
         self.help_box = Toplevel()
 
         #if user press cross instead of dismiss, close help and release help button
-        self.help_box.protocol('WM_DELETE_WINDOW', partial(self.close_help2, partner))
+        self.help_box.protocol('WM_DELETE_WINDOW', partial(self.close_game, partner))
 
         # set up gui frame
         self.help_frame = Frame(self.help_box, width=300)
@@ -294,35 +298,9 @@ class Game:
         self.number_frame = Frame(self.help_frame, width=300)
         self.number_frame.grid(row=0)
 
-        # Generate random numbers for the question
-        num1 = random.randint(low_number, high_number)
-        num2 = random.randint(low_number, high_number)
+        # Set up the numbers to be recorded for the stats all_calculations list
         self.num1_rec = IntVar()
         self.num2_rec = IntVar()
-        self.num1_rec.set(num1)
-        self.num2_rec.set(num2)
-
-        # Check which radio button was chosen and create question
-        if thingy == 1:
-            op_text = "+"
-            answer = num1 + num2
-
-        elif thingy == 2:
-            op_text = "-"
-            answer = num1 - num2
-
-        elif thingy == 3:
-            op_text = "x"
-            answer = num1 * num2
-
-        else:
-            op_text = "÷"
-            num3 = num1 * num2
-            answer = num1
-            num1 = num3
-
-        # record actual answer
-        self.true_answer.set(answer)
 
         # set question number
         self.how_heading = Label(self.number_frame, text="Question {}:".format(self.question_number.get()),
@@ -330,13 +308,13 @@ class Game:
         self.how_heading.grid(row=1, column=0, padx=5)
 
         # show the question
-        self.first_number = Label(self.number_frame, text="{}".format(num1), font="Arial 15", anchor=W)
+        self.first_number = Label(self.number_frame, text="{}", font="Arial 15", anchor=W)
         self.first_number.grid(row=1, column=1)
 
-        self.symbol = Label(self.number_frame, text="{}".format(op_text), font="Arial 15", anchor=W)
+        self.symbol = Label(self.number_frame, text="{}", font="Arial 15", anchor=W)
         self.symbol.grid(row=1, column=2)
 
-        self.second_number = Label(self.number_frame, text="{}".format(num2), font="Arial 15", anchor=W, width=12)
+        self.second_number = Label(self.number_frame, text="{}", font="Arial 15", anchor=W, width=12)
         self.second_number.grid(row=1, column=3)
 
         # frame for answering question
@@ -370,52 +348,71 @@ class Game:
         self.continue_button.config(state=DISABLED)
 
         # dismiss button (row 2)
-        self.dismiss_btn = Button(self.lower_frame, text="Stats", width=10,
+        self.stats_button = Button(self.lower_frame, text="Stats", width=10,
                                   bg="#660000", font="Arial 14 bold", fg="white",
-                                  command=lambda: self.close_help(self.all_calculations))
-        self.dismiss_btn.grid(row=1, column=1, pady=15, padx=2)
+                                  command=lambda: self.open_stats(self.all_calculations))
+        self.stats_button.grid(row=1, column=1, pady=15, padx=2)
 
+        # set up a variable to record what buttons are enabled or disabled when closing stats. works by
+        # setting as 0 or 1, which will either enable or disabled the continue or submit button when closing stats box.
         self.bach = IntVar()
 
-    # disable buttons when opening help
-    def close_help(self, calc_history):
+        # generate questions from the next_question function
+        self.next_question(partner)
 
+    # disable buttons when opening stats
+    def open_stats(self, calc_history):
+
+        # disable all buttons in game class
         self.continue_button.config(state=DISABLED)
-        self.dismiss_btn.config(state=DISABLED)
+        self.stats_button.config(state=DISABLED)
         self.help_button.config(state=DISABLED)
         self.answer_question.config(state=DISABLED)
+        # carry over stats list to stats box
         Stats(self, calc_history)
 
-    def close_help2(self, partner):
+    # Close everything
+    def close_game(self, partner):
         root.destroy()
 
+    #open help
     def help2(self):
         get_help = Help2(self)
 
     # checks answer is correct
     def check_answer(self, partner):
 
+        # grab variable to check answer, and add to stats list
+        # Grab correct answer to check against user answer
         answer = self.true_answer.get()
+        # Grab user answer to check against correct answer
         user_answer = self.answer_entry.get()
+        #gets the number of questions answered to increase by 1 if there are no errors
         questions_answered = self.questions_answered.get()
+        #grab numbers used in question to record for stats
         num1 = self.num1_rec.get()
         num2 = self.num2_rec.get()
-        thingy = partner.var.get()
+        # Grab variable used for first radio buttons
+        math_variable = partner.var.get()
+        # grab how many have been answered correctly so far, to update if needed
         correctly_answered = self.correctly_answered.get()
 
-        if thingy == 1:
+        # op_text used in this case to add the correct variable to the stats function
+        if math_variable == 1:
             op_text = "+"
 
-        elif thingy == 2:
+        elif math_variable == 2:
             op_text = "-"
 
-        elif thingy == 3:
-            op_text = "x"
+        elif math_variable == 3:
+            op_text = "×"
 
         else:
             op_text = "÷"
 
+        # Check if user answer is correct, incorrect or a value error
         try:
+            # checks if user answer is a number.
             user_answer = int(user_answer)
             answer = int(answer)
 
@@ -423,49 +420,69 @@ class Game:
             if user_answer == answer:
                 self.answer_entry.config(bg="#3DCE30")
                 self.entry_error_label.config(text="Correct", fg="green")
+                # sets bach to 1, so that when the buttons update, if the user decides to open
+                # stats, it will enable the correct buttons when closing stats
                 bach = 1
                 self.bach.set(bach)
+                # edits buttons so user cannot answer the same question twice
                 self.answer_question.config(state=DISABLED)
                 self.continue_button.config(state=NORMAL)
+                # updates the questions answered for the stats at the end
                 questions_answered = questions_answered + 1
                 self.questions_answered.set(questions_answered)
+                # puts the question number, question and user answer in the list marked correctly
                 question_summary = "Q{}:  {} {} {} = {} - Correct".format(questions_answered, num1, op_text, num2,
                                                                           user_answer)
                 self.all_calculations.append(question_summary)
+                # updates correctly_ answered questions number for end stats
                 correctly_answered = correctly_answered + 1
                 self.correctly_answered.set(correctly_answered)
 
+            # function for if user gets the answer inccorect
             else:
                 self.entry_error_label.config(text="Incorrect", fg="red")
 
                 # Change entry box background to pink
                 self.answer_entry.config(bg="#ffafaf")
+                # edits buttons so user cannot answer the same question twice
                 self.answer_question.config(state=DISABLED)
                 self.continue_button.config(state=NORMAL)
+                # sets bach to 1, so that when the buttons update, if the user decides to open
+                # stats, it will enable the correct buttons when closing stats
                 bach = 1
                 self.bach.set(bach)
+                # updates the questions answered for the stats at the end
                 questions_answered = questions_answered + 1
                 self.questions_answered.set(questions_answered)
+                # puts the question number, question, user answer and the correct answer in the list marked incorrectly
                 question_summary = "Q{}.  {} {} {} = {} - Incorrect: Answer = {}".format(questions_answered,
                                                                                          num1, op_text,
                                                                                          num2, user_answer, answer)
                 self.all_calculations.append(question_summary)
 
+        # if the user answers with anything but a number
         except ValueError:
+            # error telling user numbers only
             self.entry_error_label.config(text="Numbers Only")
 
             # Change entry box background to pink
             self.answer_entry.config(bg="#ffafaf")
+            # set bach to 0, so that if the user opens then closes stats, continue button is still disabled
             bach = 0
             self.bach.set(bach)
 
     # generate next question
     def next_question(self, partner):
 
+        # set bach to 0, to remember that the continue button is now disabled
         self.bach.set(0)
 
-        # get low and high numbers
+        # set variables used to develop questions
+        # grabs the variable used, addition, multiplication, subtraction, division
+        math_variable = partner.var.get()
+        # Get the low number from the User input at the start
         low_number = partner.low_number.get()
+        # Get the high number from the User input at the start
         high_number = partner.high_number.get()
 
         # edit question number
@@ -473,35 +490,42 @@ class Game:
         question_number = question_number + 1
         self.question_number.set(question_number)
 
-        thingy = partner.var.get()
-
         # generate new random numbers
         num1 = random.randint(low_number, high_number)
         num2 = random.randint(low_number, high_number)
+        # set these variables as new numbers for stats list purposes
         self.num1_rec.set(num1)
         self.num2_rec.set(num2)
 
         # generate next question
-        if thingy == 1:
+        # op_text used to update the question, so users dont have to remember thier chosen radio button.
+        if math_variable == 1:
             op_text = "+"
+            # caluclates answer by adding num1 and num 2
             answer = num1 + num2
 
-        elif thingy == 2:
+        elif math_variable == 2:
             op_text = "-"
+            # caluclates answer by subtracting num1 and num 2
             answer = num1 - num2
 
-        elif thingy == 3:
-            op_text = "x"
+        elif math_variable == 3:
+            op_text = "×"
+            # caluclates answer by multiplying num1 and num 2
             answer = num1 * num2
 
         else:
             op_text = "÷"
+            # caluclates answer by multiplying num1 and num 2 to get num3, setting num1 as the
+            # answer, and then setting num3 as num1, making it so the answer is always an initger
             num3 = num1 * num2
             answer = num1
             num1 = num3
 
+        # set the true answer for answer hecking purposes
         self.true_answer.set(answer)
 
+        # edit the question that appears on screen
         self.first_number.config(text="{}".format(num1))
 
         self.symbol.config(text="{}".format(op_text))
@@ -514,6 +538,7 @@ class Game:
         self.entry_error_label.config(text="")
         self.answer_entry.config(bg="SystemButtonFace")
         self.answer_entry.delete(0, 'end')
+        # update the question number to be the next question
         self.how_heading.config(text="Question {}:".format(self.question_number.get()))
 
 
@@ -569,13 +594,14 @@ class Help2:
 
 class Stats:
     def __init__(self, partner, calc_history):
-
+        
+        # get questions answered and correctly answered to calculate percentage score
         questions_answered = partner.questions_answered.get()
         correctly_answered = partner.correctly_answered.get()
-
+        
+        # set up new variables fore easier programming for stats and export
         self.questions_answered = IntVar()
         self.correctly_answered = IntVar()
-
         self.questions_answered.set(questions_answered)
         self.correctly_answered.set(correctly_answered)
 
@@ -583,7 +609,7 @@ class Stats:
         self.history_box = Toplevel()
 
         # if user press cross instead of dismiss, close stats and release stats button
-        self.history_box.protocol('WM_DELETE_WINDOW', partial(self.close_history, partner))
+        self.history_box.protocol('WM_DELETE_WINDOW', partial(self.close_stats, partner))
 
         # set up gui frame
         self.history_frame = Frame(self.history_box)
@@ -634,7 +660,7 @@ class Stats:
         # dismiss button
         self.dismiss_button = Button(self.export_dismiss_frame, text="Dismiss",
                                      font="Arial 14 bold",
-                                     command=partial(self.close_history, partner))
+                                     command=partial(self.close_stats, partner))
         self.dismiss_button.grid(row=0, column=1)
 
         # export button
@@ -642,44 +668,48 @@ class Stats:
                                     font="Arial 14 bold", command=lambda: self.export(calc_history))
         self.export_button.grid(row=0, column=0)
 
-        # checks if stats are blank
+        # checks if stats are blank, and if stats is blank then disable export button
         if questions_answered == 0:
             self.export_button.config(state=DISABLED)
         else:
             self.export_button.config(state=NORMAL)
-
+        
+        # Quit button
         self.finish_btn = Button(self.history_frame, text="Quit",
                                  font="Arial 14 bold", bg="#660000", fg="white", command=partial(self.finish, partner))
         self.finish_btn.grid(row=4)
 
+    # quit function
     def finish(self, partner):
         finish = Finish(self)
 
-    def close_history(self, partner):
+    def close_stats(self, partner):
+        # get bach for checking which buttons hould be enabled and disabled upon closing stats
         bach = partner.bach.get()
 
         # checks whether submit button was active or not before opening stats
         if bach == 1:
             partner.continue_button.config(state=NORMAL)
-            partner.dismiss_btn.config(state=NORMAL)
+            partner.stats_button.config(state=NORMAL)
             partner.help_button.config(state=NORMAL)
             partner.answer_question.config(state=DISABLED)
             self.history_box.destroy()
 
         else:
             partner.continue_button.config(state=DISABLED)
-            partner.dismiss_btn.config(state=NORMAL)
+            partner.stats_button.config(state=NORMAL)
             partner.help_button.config(state=NORMAL)
             partner.answer_question.config(state=NORMAL)
             self.history_box.destroy()
 
+    # export function
     def export(self, calc_history):
         Export(self, calc_history)
 
 
 class Finish:
     def __init__(self, partner):
-        # disable export button
+        # disable quit button
         partner.finish_btn.config(state=DISABLED)
 
         # sets up child window (ie: export box)
@@ -692,6 +722,7 @@ class Finish:
         self.finish_frame = Frame(self.finish_box)
         self.finish_frame.grid(row=0)
 
+        # ask user for quit confirmation
         self.finish_label = Label(self.finish_frame, text="Would you like to quit?", font="Arial, 18")
         self.finish_label.grid(row=0, pady=5)
 
@@ -712,9 +743,11 @@ class Finish:
             self.finish_box.destroy()
             partner.finish_btn.config(state=NORMAL)
 
+        # if user closes stats box before quit box, make sure the porgram doesnt break
         except:
             self.finish_box.destroy()
 
+    #if yes is clicked, close everything
     def quit456(self):
         root.destroy()
 
@@ -774,9 +807,11 @@ class Export:
         self.save_button.grid(row=0, column=0, padx=15)
 
     def save_history(self, partner, calc_history):
+        # allowed characters in filename
         valid_char = "[A-Za-z0-9_]"
         has_error = "no"
 
+        # grabs file name for checking
         filename = self.filename_entry.get()
 
         # checks for valid characters
@@ -784,12 +819,15 @@ class Export:
             if re.match(valid_char, letter):
                 continue
 
+            # error if space is used
             elif letter == " ":
                 problem = "(no spaces allowed)"
+            # error if punctuation used
             else:
                 problem = ("(no {}'s allowed)".format(letter))
             has_error = "yes"
 
+        # error if filename is blank
         if filename == "":
             problem = "can't be blank"
             has_error = "yes"
@@ -800,13 +838,17 @@ class Export:
             # change entry box background to pink
             self.filename_entry.config(bg="#ffafaf")
 
+        # update stats with final info for exporting to a text file
         else:
+            # grab questions answered and correctly answered from stats, which were grabbed from game
             questions_answered = partner.questions_answered.get()
             correctly_answered = partner.correctly_answered.get()
 
+            # claculate precentage
             percentage = correctly_answered / questions_answered
             percentage = percentage * 100
 
+            # round to 2 decimal places
             percentage = float("{:.2f}".format(percentage))
 
             # add .txt suffix!
@@ -819,7 +861,7 @@ class Export:
             for item in calc_history:
                 f.write(item + "\n")
 
-            # generates a message based on how well you do
+            # generates a message based on how well you do, based on precentage score
             f.write("\n\nYou Answered {} Correctly out "
                     "of {}".format(correctly_answered, questions_answered))
             if percentage == 100:
@@ -851,6 +893,8 @@ class Export:
         try:
             partner.export_button.config(state=NORMAL)
             self.export_box.destroy()
+
+        # close export even if stats was already closed
         except:
             self.export_box.destroy()
 
